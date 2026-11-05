@@ -1,0 +1,19 @@
+\section{Conclusão}
+\label{sec:conclusao}
+
+Construímos um removedor de fundo em tempo real para webcam e vídeos,
+sem redes neurais, combinando a subtração de fundo com MOG2 e as
+técnicas vistas em aula. O MOG2 decide, pixel a pixel, o que é pessoa,
+e as outras etapas limpam e completam essa decisão. O sistema acertou a
+contagem de objetos em 96,2\% dos quadros e chegou a um IoU médio de
+0,791, com 4 de 12 quadros acima do critério de 0,8.
+
+A principal lição foi que quase todos os erros vieram de quebrar um
+pressuposto do método, e não do algoritmo: a câmera que muda a
+exposição sozinha, a pessoa na cena durante o aprendizado e a roupa da
+cor do fundo. O exemplo feito à mão mostrou por que a exposição era tão
+grave e por que aumentar o limiar não resolvia. Aprendemos também a
+medir antes de mudar: medir o brilho da parede revelou a causa, e a
+melhor correção para a webcam foi na captura, travando a exposição.
+Por fim, vimos que todo ajuste é uma troca e que até o gabarito precisa
+ser conferido antes de se confiar no número.

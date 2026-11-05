@@ -1,0 +1,69 @@
+\documentclass[12pt,a4paper]{article}
+
+% Formato das citações: numerica | descritiva  (mesmo estilo do modelo do TCC)
+\usepackage[descritiva]{tccstyle}
+
+% Espaçamento: o modelo do TCC usa 1,5 (ABNT). O PDF da disciplina limita o
+% relatório a 5--8 páginas, então o corpo usa espaçamento simples.
+% Para voltar ao 1,5, apague a linha abaixo.
+\singlespacing
+
+\usepackage{float}
+\newcommand{\pend}[1]{\textcolor{red}{[\textbf{CONFIRMAR:} #1]}}
+
+% ----------------------- METADADOS -----------------------
+\titulo{ClearCut-MOG2}
+\subtitulo{removedor de fundo em tempo real com subtração de fundo, sem redes neurais}
+% Nomes do grupo: um por linha, separados por \\
+\autor{Ruan Pedro Tirabassi\\Nome do Integrante 2\\Nome do Integrante 3}
+\instituicao{Universidade Estadual do Norte do Paraná}
+\campus{Luiz Meneghel}
+\centro{Centro de Ciências Tecnológicas}
+\curso{Bacharelado em Ciência da Computação}
+\local{Bandeirantes}
+\ano{2026}
+\logo{logo_uenp.png}            % arquivo em figuras/
+\natureza{Relatório do projeto da Avaliação 2 da disciplina de Visão
+Computacional, do curso de Bacharelado em Ciência da Computação da
+Universidade Estadual do Norte do Paraná.}
+
+% Relatório de disciplina: só capa e folha de rosto (sem folha de aprovação).
+\makeatletter
+\renewcommand{\tcc@rosto}{%
+  \begin{titlepage}\singlespacing\centering
+    {\tcc@autor\par}\vspace{5cm}
+    {\tcc@titcompleto\par}\vspace{2cm}
+    \begin{flushright}\begin{minipage}{0.5\textwidth}\small\singlespacing
+      \tcc@natureza\par\vspace{0.4cm}
+      Professor: Tafarel Rocha da Silva
+    \end{minipage}\end{flushright}\vfill
+    {\bfseries\MakeUppercase{\tcc@local}\par\vspace{0.4cm}\tcc@ano\par}
+  \end{titlepage}}
+\renewcommand{\maketitle}{%
+  \pagenumbering{gobble}\tcc@capa\tcc@rosto
+  \pagenumbering{roman}\setcounter{page}{1}\pagestyle{empty}}
+\makeatother
+
+\begin{document}
+
+\maketitle                       % capa + folha de rosto
+
+\clearpage \tableofcontents      % sumário
+\clearpage
+\pagenumbering{arabic}\pagestyle{fancy}  % numeração visível a partir da introdução
+
+\input{capitulos/introducao}
+\input{capitulos/fundamentacao_teorica}
+\input{capitulos/metodologia}
+\input{capitulos/resultados}
+\input{capitulos/discussao}
+\input{capitulos/conclusao}
+\input{capitulos/uso_ia}
+
+\clearpage
+\phantomsection
+\addcontentsline{toc}{section}{REFERÊNCIAS}
+\bibliographystyle{\tccbibstyle}
+\bibliography{referencias}
+
+\end{document}

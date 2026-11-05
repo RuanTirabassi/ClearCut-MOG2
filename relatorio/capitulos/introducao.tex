@@ -1,0 +1,25 @@
+\section{Introdução}
+\label{sec:introducao}
+
+Trocar o fundo de um vídeo é comum em videochamadas e transmissões ao
+vivo: esconde o ambiente e protege a privacidade de quem está na câmera.
+Para isso, o programa precisa decidir, em cada quadro e em tempo real,
+quais pixels são da pessoa e quais são do fundo, um problema de
+segmentação.
+
+O ClearCut \citep{clearcut} faz isso com a webcam e troca o fundo com as
+teclas A e D, mas segmenta com o \textit{SelfieSegmentation} do
+MediaPipe, uma rede neural, o que não é permitido neste trabalho.
+Mantivemos a experiência do ClearCut (webcam, pasta de fundos, teclas
+A/D) e trocamos a segmentação por técnicas clássicas, com o conceito
+novo da \textbf{subtração de fundo com MOG2}
+\citep{zivkovic2004,opencv_tutorial_bgsub}.
+
+O ClearCut-MOG2 funciona com a webcam ou com vídeos. Ele aprende a cena
+vazia e, quando a pessoa entra, gera a máscara dela, conta os objetos
+encontrados e cola a pessoa sobre o fundo escolhido, mostrando lado a
+lado o original, a máscara e o resultado. Roda na CPU de um computador
+comum, sem GPU nem modelo treinado; em troca, exige câmera parada e cena
+vazia no início. Para avaliá-lo, gravamos dois vídeos com iluminação
+diferente e comparamos as máscaras do programa com máscaras pintadas à
+mão pelo grupo.

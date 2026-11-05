@@ -1,0 +1,59 @@
+# ============================================================
+# LGPD: nada que mostre a pessoa gravada vai para o repositório.
+# Vídeos, fotos, quadros, máscaras e gabaritos ficam só no PC
+# e no .zip de entrega.
+# ============================================================
+
+# --- Vídeos (qualquer pasta) ---
+*.mp4
+*.avi
+*.mov
+*.mkv
+*.webm
+*.wmv
+
+# --- Imagens (qualquer pasta) ---
+*.jpg
+*.jpeg
+*.png
+*.bmp
+*.gif
+*.webp
+*.heic
+
+# Exceções: imagens sem pessoa, necessárias para rodar/compilar
+!fundos/*.jpg
+!relatorio/figuras/logo_uenp.png
+
+# --- Pastas inteiras com material da pessoa ---
+videos/
+resultados/
+gabarito/
+
+# --- Arquivos gerados que contêm as fotos ---
+*.pdf
+*.pptx
+*.zip
+
+# --- Python ---
+__pycache__/
+*.pyc
+venv/
+.venv/
+
+# --- LaTeX (arquivos auxiliares) ---
+*.aux
+*.log
+*.out
+*.toc
+*.bbl
+*.blg
+*.synctex.gz
+*.fls
+*.fdb_latexmk
+
+# --- Sistema / editor ---
+Thumbs.db
+desktop.ini
+.DS_Store
+.vscode/

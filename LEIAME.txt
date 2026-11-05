@@ -1,0 +1,71 @@
+CLEARCUT-MOG2 - REMOVEDOR DE FUNDO EM TEMPO REAL (SEM REDES NEURAIS)
+Visão Computacional - Avaliação 2 - Prof. Tafarel Rocha da Silva
+Integrantes: Gabriel Rocha de Oliveira, João Pedro Silva da Rosa Lima, Ruan Pedro Tirabassi
+
+Inspirado no ClearCut (https://github.com/KrishBharadwaj5678/ClearCut), que troca o
+fundo da webcam usando uma rede neural (MediaPipe). Aqui a segmentação é feita com
+técnicas clássicas de OpenCV + o conceito novo: subtração de fundo com MOG2
+(cv2.createBackgroundSubtractorMOG2).
+
+
+1. INSTALAÇÃO
+-------------
+Python 3.10 a 3.13. Na pasta do projeto:
+
+    pip install -r requirements.txt
+
+(instala opencv-python==4.10.0.84 e numpy==2.2.6)
+
+
+2. COMO RODAR (sempre a partir da pasta do projeto)
+---------------------------------------------------
+    python codigo/clearcut_mog2.py                          -> webcam
+    python codigo/clearcut_mog2.py videos/video_claro.mp4   -> vídeo do grupo
+    python codigo/clearcut_mog2.py videos/video_escuro.mp4  -> vídeo do grupo
+    python codigo/clearcut_mog2.py 0 --gravar               -> webcam + grava o painel
+                                                               em resultados/demo_webcam.mp4
+
+A janela mostra:  original | máscara | resultado  (com o fundo atual e o nº de objetos).
+
+Teclas (com a janela selecionada):
+    A / D   fundo anterior / próximo (imagens da pasta fundos/)
+    B       reaprender o fundo (saia da cena antes)
+    S       salvar frame, máscara e resultado em resultados/
+    Q       sair (fechar no X da janela também funciona)
+
+IMPORTANTE (webcam): o programa conta 5 segundos ("Saia da cena: 5, 4, 3...") e depois
+aprende o fundo por ~2 segundos. Nesse tempo a pessoa precisa estar FORA da imagem. Quando
+o terminal mostrar "Fundo aprendido! Pode entrar na cena.", é só voltar para a frente da
+câmera. O programa também trava a exposição automática da webcam durante o uso (e devolve
+ao automático ao sair), para a imagem não clarear sozinha quando a pessoa chega perto.
+
+Nos vídeos não há contagem: os primeiros segundos de cada vídeo já são de cena vazia.
+O programa salva sozinho 1 frame a cada 20 em resultados/ (usados na avaliação).
+
+
+3. AVALIAÇÃO (tabela de acertos)
+--------------------------------
+    python codigo/criar_gabarito.py <frames>   -> pintar à mão a máscara correta (gabarito)
+    python codigo/avaliacao.py                 -> tabela de acertos
+
+A avaliação compara a máscara do programa com o gabarito pintado à mão em cada frame:
+IoU = pixels de pessoa em comum / pixels de pessoa no programa OU no gabarito.
+ACERTO se IoU >= 0,8. Mostra a tabela, a % de acertos e salva
+resultados/tabela_acertos.csv.
+
+
+4. PASTAS
+---------
+    codigo/       clearcut_mog2.py (programa), criar_gabarito.py, avaliacao.py
+    fundos/       imagens de fundo (troca com A/D)
+    videos/       video_claro.mp4 e video_escuro.mp4 (gravados pelo grupo)
+    resultados/   frame_, mascara_, resultado_*.png, demo_*.mp4 (vídeos da demonstração),
+                  tabela_acertos.csv
+    gabarito/     gabarito_*.png (máscaras corretas feitas à mão)
+    relatorio/    relatório em LaTeX (main.tex, capitulos/, figuras/, referencias.bib)
+
+Privacidade (LGPD): os vídeos, frames, gabaritos e figuras mostram um integrante do
+grupo. Eles estão neste .zip só para a avaliação; o repositório público do código
+(GitHub) não os inclui (ver .gitignore).
+
+Mais detalhes (pipeline, parâmetros, como gravar os vídeos): README.md

@@ -1,0 +1,299 @@
+%% ======================================================================
+%%  tccstyle.sty — Estilo para TCC (ABNT-like) com citações selecionáveis
+%%  Uso:  \usepackage[numerica]{tccstyle}    % [1], [2,3]
+%%        \usepackage[descritiva]{tccstyle}  % (Autor, 2024) / Autor (2024)
+%% ======================================================================
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{tccstyle}[2024/01/01 Estilo para TCC]
+
+
+% ---------- verificação de pacotes (avisa todos os que faltam de uma vez) ----------
+\def\tcc@missing{}
+\@for\tcc@p:=siunitx,algorithm,algpseudocode,pgfplots,pgfplotstable,pdfpages,xltabular,%
+  makecell,tcolorbox,listings,csquotes,microtype,titlesec,setspace,fancyhdr,natbib,%
+  subcaption,mathtools,multirow,enumitem,bookmark,mathptmx\do{%
+  \IfFileExists{\tcc@p.sty}{}{\edef\tcc@missing{\tcc@missing\space\tcc@p}}}
+\ifx\tcc@missing\@empty\else
+  \PackageError{tccstyle}{Pacotes LaTeX ausentes:\tcc@missing}{%
+    Instale-os. Ubuntu/Debian: sudo apt install texlive-science texlive-latex-extra%
+    ^^Jtexlive-pictures texlive-lang-portuguese texlive-publishers  (ou texlive-full).%
+    ^^JWindows/MiKTeX: instala automaticamente; TeX Live: tlmgr install <pacote>.}
+\fi
+
+% ---------- opções ----------
+\newif\iftcc@num \tcc@numtrue
+\DeclareOption{numerica}{\tcc@numtrue}
+\DeclareOption{descritiva}{\tcc@numfalse}
+\newif\iftcc@arial \tcc@arialtrue
+\DeclareOption{arial}{\tcc@arialtrue}
+\DeclareOption{times}{\tcc@arialfalse}
+\ProcessOptions\relax
+
+% ---------- codificação, idioma, fonte ----------
+\RequirePackage[utf8]{inputenc}
+\RequirePackage[T1]{fontenc}
+\RequirePackage[brazilian]{babel}
+\RequirePackage[scaled=0.92]{helvet}   % Helvetica/Arial (capa e, na opção arial, texto todo)
+\iftcc@arial
+  \renewcommand{\familydefault}{\sfdefault}
+\else
+  \RequirePackage{mathptmx}        % Times
+\fi
+\renewcommand{\ttdefault}{pcr}       % monoespaçada vetorial (Courier), sempre disponível
+\RequirePackage[expansion=false]{microtype}  % sem expansão: evita erro com fontes não escaláveis
+\RequirePackage{csquotes}
+
+% ---------- página e espaçamento ----------
+\RequirePackage[a4paper,left=3cm,right=2cm,top=3cm,bottom=2cm]{geometry}
+\RequirePackage{setspace}
+\onehalfspacing
+\setlength{\parindent}{1.25cm}
+\setlength{\parskip}{0pt}
+\RequirePackage{indentfirst}
+\RequirePackage{fancyhdr}
+\setlength{\headheight}{14.5pt}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[R]{\thepage}
+\renewcommand{\headrulewidth}{0pt}
+\fancypagestyle{plain}{\fancyhf{}\fancyhead[R]{\thepage}\renewcommand{\headrulewidth}{0pt}}
+
+% ---------- títulos de seção ----------
+\RequirePackage{titlesec}
+\titleformat{\section}{\normalfont\bfseries\fontsize{12}{14}\selectfont}{\thesection}{1em}{\MakeUppercase}
+\titleformat{\subsection}{\normalfont\bfseries\fontsize{12}{14}\selectfont}{\thesubsection}{1em}{}
+\titleformat{\subsubsection}{\normalfont\fontsize{12}{14}\selectfont}{\thesubsubsection}{1em}{}
+\titlespacing*{\section}{0pt}{18pt}{12pt}
+\titlespacing*{\subsection}{0pt}{12pt}{9pt}
+\titlespacing*{\subsubsection}{0pt}{12pt}{9pt}
+
+% ---------- pacotes gerais (herdados do seu preâmbulo) ----------
+\RequirePackage{xcolor}
+\RequirePackage{graphicx}
+\RequirePackage{float}
+\RequirePackage{booktabs,tabularx,array,makecell,multirow,xltabular}
+\RequirePackage[font=small,labelfont=bf,labelsep=endash]{caption}
+\RequirePackage{amsmath,amssymb}
+\RequirePackage{enumitem}
+\RequirePackage{xurl}
+
+% ---------- TikZ ----------
+\RequirePackage{tikz}
+\usetikzlibrary{shapes.geometric,arrows.meta,positioning,calc,fit,backgrounds}
+\tikzset{
+  box/.style={draw,rectangle,rounded corners=3pt,align=center,inner sep=6pt,font=\footnotesize},
+  stepbox/.style={draw,rectangle,fill=blue!5,rounded corners=2pt,align=center,
+                  text width=2.6cm,minimum height=0.9cm,font=\scriptsize},
+  arrow/.style={-Stealth,thick},
+  line/.style={draw,-Stealth,thick}
+}
+
+% ---------- código-fonte ----------
+\RequirePackage{listings}
+\renewcommand{\lstlistingname}{Código}
+\lstdefinelanguage{Solidity}{
+  keywords={pragma,solidity,contract,function,public,private,external,internal,view,pure,
+            returns,return,uint,uint256,address,mapping,struct,event,emit,require,memory,
+            storage,payable,constructor,if,else,for,while,msg,block},
+  sensitive=true,morecomment=[l]{//},morecomment=[s]{/*}{*/},morestring=[b]"}
+\lstset{
+  language=Solidity,basicstyle=\ttfamily\footnotesize,
+  keywordstyle=\color{blue!60!black}\bfseries,
+  commentstyle=\color{green!40!black}\itshape,
+  stringstyle=\color{orange!60!black},
+  showstringspaces=false,breaklines=true,frame=single,rulecolor=\color{black!30},
+  literate={á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1
+           {ã}{{\~a}}1 {õ}{{\~o}}1 {ç}{{\c c}}1 {ê}{{\^e}}1 {â}{{\^a}}1}
+
+\RequirePackage[most]{tcolorbox}
+\newtcolorbox{destaque}[1][]{colback=blue!4,colframe=blue!50!black,
+  fonttitle=\bfseries,breakable,#1}
+
+
+% ---------- matemática ----------
+\RequirePackage{mathtools}          % estende amsmath
+\RequirePackage{amsthm}
+\theoremstyle{plain}
+\newtheorem{teorema}{Teorema}[section]
+\newtheorem{lema}[teorema]{Lema}
+\newtheorem{proposicao}[teorema]{Proposição}
+\newtheorem{corolario}[teorema]{Corolário}
+\theoremstyle{definition}
+\newtheorem{definicao}[teorema]{Definição}
+\newtheorem{exemplo}[teorema]{Exemplo}
+\theoremstyle{remark}
+\newtheorem*{observacao}{Observação}
+\renewcommand{\proofname}{Demonstração}
+\RequirePackage{siunitx}            % unidades e números: \SI{1,5}{\second}
+\sisetup{output-decimal-marker={,}}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\newcommand{\bigO}[1]{\mathcal{O}\!\left(#1\right)}   % notação O-grande
+\newcommand{\N}{\mathbb{N}}\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\R}{\mathbb{R}}\newcommand{\Q}{\mathbb{Q}}
+
+% ---------- algoritmos (pseudocódigo em português) ----------
+\RequirePackage{algorithm}
+\RequirePackage[noend]{algpseudocode}
+\floatname{algorithm}{Algoritmo}
+\renewcommand{\listalgorithmname}{Lista de Algoritmos}
+\algrenewcommand\algorithmicrequire{\textbf{Entrada:}}
+\algrenewcommand\algorithmicensure{\textbf{Saída:}}
+\algrenewcommand\algorithmicif{\textbf{se}}
+\algrenewcommand\algorithmicthen{\textbf{então}}
+\algrenewcommand\algorithmicelse{\textbf{senão}}
+\algrenewcommand\algorithmicfor{\textbf{para}}
+\algrenewcommand\algorithmicforall{\textbf{para todo}}
+\algrenewcommand\algorithmicdo{\textbf{faça}}
+\algrenewcommand\algorithmicwhile{\textbf{enquanto}}
+\algrenewcommand\algorithmicrepeat{\textbf{repita}}
+\algrenewcommand\algorithmicuntil{\textbf{até que}}
+\algrenewcommand\algorithmicreturn{\textbf{retorne}}
+\algrenewcommand\algorithmiccomment[1]{\hfill$\triangleright$ #1}
+
+% ---------- gráficos de dados e figuras compostas ----------
+\RequirePackage{pgfplots}
+\pgfplotsset{compat=newest,
+  every axis/.append style={grid=major,tick label style={font=\footnotesize},
+    label style={font=\small},legend style={font=\footnotesize}}}
+\RequirePackage{pgfplotstable}      % tabelas a partir de .csv
+\RequirePackage{subcaption}         % subfiguras
+\RequirePackage{pdfpages}           % incluir PDFs (anexos, fichas)
+\graphicspath{{figuras/}}           % \includegraphics{arquivo} busca em figuras/
+
+% ---------- listings: mais linguagens e atalho para arquivos ----------
+\renewcommand{\lstlistlistingname}{Lista de Códigos}
+\lstdefinestyle{python}{language=Python}
+\lstdefinestyle{c}{language=C}
+\lstdefinestyle{java}{language=Java}
+\lstdefinestyle{sql}{language=SQL}
+\lstdefinestyle{bash}{language=bash}
+% \inputcodigo[linguagem]{arquivo}{legenda}{rótulo}
+\newcommand{\inputcodigo}[4][Solidity]{%
+  \lstinputlisting[language=#1,caption={#3},label={#4}]{#2}}
+
+% ---------- fonte de figuras/tabelas (ABNT) ----------
+\newcommand{\fonte}[1]{\par\vspace{2pt}\begin{center}\small Fonte: #1\end{center}}
+\newcommand{\topico}[1]{\texttt{\detokenize{#1}}}
+
+% ---------- citações: natbib ----------
+\iftcc@num
+  \RequirePackage[numbers,sort&compress]{natbib}
+  \newcommand{\tccbibstyle}{unsrtnat}     % ordem de citação
+\else
+  \RequirePackage[authoryear,round]{natbib}
+  \newcommand{\tccbibstyle}{plainnat}     % ou: sbc
+  \setlength{\bibsep}{0.5\baselineskip}
+\fi
+
+% ---------- metadados ----------
+\newcommand{\autor}[2][]{\def\tcc@autor{#2}\def\tcc@autorref{#1}}  % \autor[SOBRENOME, Nome]{Nome Completo}
+\newcommand{\titulo}[1]{\def\tcc@titulo{#1}}
+\newcommand{\instituicao}[1]{\def\tcc@inst{#1}}
+\newcommand{\campus}[1]{\def\tcc@campus{#1}}      % ex.: Luiz Meneghel
+\newcommand{\centro}[1]{\def\tcc@centro{#1}}
+\newcommand{\subtitulo}[1]{\def\tcc@subtitulo{#1}}
+\newcommand{\numfolhas}[1]{\def\tcc@total{#1}}      % opcional: força o nº de folhas
+\newcommand{\curso}[1]{\def\tcc@curso{#1}}
+\newcommand{\local}[1]{\def\tcc@local{#1}}
+\newcommand{\ano}[1]{\def\tcc@ano{#1}}
+\newcommand{\orientador}[2]{\def\tcc@orient{#1}\def\tcc@orientinst{#2}}
+\newcommand{\natureza}[1]{\def\tcc@natureza{#1}}
+\newcommand{\logo}[1]{\def\tcc@logo{#1}}
+\newcommand{\dataaprovacao}[1]{\def\tcc@data{#1}}
+\def\tcc@logo{}\def\tcc@subtitulo{}\def\tcc@autorref{}\def\tcc@centro{}\def\tcc@total{?}\def\tcc@data{\_\_\_ de \_\_\_\_\_\_\_\_\_\_ de \tcc@ano}
+\def\tcc@banca{}
+\newcommand{\membrobanca}[2]{\g@addto@macro\tcc@banca{\bancaitem{#1}{#2}}}
+\newcommand{\bancaitem}[2]{%
+  \vspace{1.2cm}\begin{center}\rule{9cm}{0.4pt}\\ #1\\ #2\end{center}}
+
+% ---------- versaletes simuladas (Helvetica não tem small caps) ----------
+\newcommand{\tcc@sc}[1]{\expandafter\tcc@scw#1 \tcc@nil\tcc@end}  % expande a macro antes de separar as palavras
+\def\tcc@scw#1 #2\tcc@end{\tcc@scword{#1}\ifx\tcc@nil#2\else\ \tcc@scw#2\tcc@end\fi}
+\def\tcc@scword#1{\tcc@scwx#1\@nil}
+\def\tcc@scwx#1#2\@nil{%
+  \ifnum`#1=\uccode`#1 %
+    #1\ifx\relax#2\relax\else\scalebox{0.8}[0.8]{\MakeUppercase{#2}}\fi
+  \else
+    \scalebox{0.8}[0.8]{\MakeUppercase{#1#2}}%
+  \fi}
+
+% contagem de folhas (para a referência do resumo; precisa de 2 compilações)
+\newcounter{tccphys}
+\RequirePackage{atbegshi}
+\AtBeginShipout{\stepcounter{tccphys}}
+\AtEndDocument{\clearpage\immediate\write\@auxout{\string\gdef\string\tcc@total{\the\c@tccphys}}}
+
+% título: só o título principal em negrito; subtítulo normal
+\newcommand{\tcc@titcompleto}{\textbf{\tcc@titulo}\ifx\tcc@subtitulo\@empty\else: \tcc@subtitulo\fi}
+
+% referência no topo do resumo (ABNT NBR 6028)
+\newcommand{\tcc@ficha}{%
+  \ifx\tcc@autorref\@empty\tcc@autor\else\tcc@autorref\fi.\ \tcc@titcompleto.\ \tcc@ano.\ \tcc@total{} f.\
+  \tcc@natureza@curto\ (\tcc@curso) -- \tcc@centro, \tcc@inst, \tcc@local, \tcc@ano.}
+\newcommand{\tcc@natureza@curto}{Trabalho de Conclusão de Curso}
+
+% ---------- capa, folha de rosto, aprovação ----------
+\newcommand{\tcc@capa}{%
+  \begin{titlepage}\singlespacing\sffamily\fontsize{14}{18}\selectfont\centering
+    \noindent\makebox[\dimexpr\textwidth+0.7cm\relax][l]{%
+    \begin{minipage}[c]{0.27\textwidth}\raggedright
+      \ifx\tcc@logo\@empty\else\includegraphics[height=5cm]{\tcc@logo}\fi
+    \end{minipage}%
+    \begin{minipage}[c]{0.73\textwidth}\raggedleft\bfseries
+      \tcc@sc{\tcc@inst}\\
+      \textit{\tcc@scw Campus \tcc@nil\tcc@end} \tcc@sc{\tcc@campus}\\
+      \tcc@sc{\tcc@centro}\\
+      \tcc@sc{\tcc@curso}
+    \end{minipage}}\par
+    \vspace{0.8cm}\tcc@autor\par
+    \vspace{\stretch{1}}
+    \parbox{0.85\textwidth}{\centering\tcc@titcompleto}\par
+    \vspace{\stretch{1.3}}
+    \tcc@sc{\tcc@local}\par\tcc@ano\par
+  \end{titlepage}}
+\newcommand{\tcc@rosto}{%
+  \begin{titlepage}\singlespacing\centering
+    \MakeUppercase{\tcc@autor}\par\vspace{5cm}
+    {\tcc@titcompleto\par}\vspace{2cm}
+    \begin{flushright}\begin{minipage}{0.5\textwidth}\small\singlespacing
+      \tcc@natureza\par\vspace{0.4cm}
+      Orientador: \tcc@orient
+    \end{minipage}\end{flushright}\vfill
+    {\bfseries\MakeUppercase{\tcc@local}\par\vspace{0.4cm}\tcc@ano\par}
+  \end{titlepage}}
+\newcommand{\tcc@aprov}{%
+  \begin{titlepage}\singlespacing\centering
+    \MakeUppercase{\tcc@autor}\par\vspace{2cm}
+    {\tcc@titcompleto\par}\vspace{1cm}
+    \begin{flushright}\begin{minipage}{0.55\textwidth}\small\singlespacing\tcc@natureza\end{minipage}\end{flushright}
+    \vspace{1cm}{\bfseries BANCA EXAMINADORA}\par
+    \tcc@banca\vfill
+    \tcc@local, \tcc@data
+  \end{titlepage}}
+\renewcommand{\maketitle}{%
+  \pagenumbering{gobble}\tcc@capa\tcc@rosto\tcc@aprov
+  \pagenumbering{roman}\setcounter{page}{1}\pagestyle{empty}}  % pré-textuais: contadas, sem número visível
+
+% ---------- seções pré-textuais não numeradas ----------
+\newcommand{\secaopretextual}[1]{%
+  \clearpage\phantomsection
+  \begin{center}\bfseries\MakeUppercase{#1}\end{center}\vspace{0.5cm}}
+% \begin{resumoabnt}[ref]{palavras-chave. separadas. por ponto.}{Resumo}
+%   [ref] (opcional) imprime a referência do trabalho no topo da página.
+\newenvironment{resumoabnt}[3][nao]{%
+  \clearpage\phantomsection
+  \def\tcc@opt{#1}\def\tcc@refstr{ref}%
+  \singlespacing
+  \ifx\tcc@opt\tcc@refstr
+    {\raggedright\noindent\tcc@ficha\par}\vspace{1cm}
+  \fi
+  \begin{center}\bfseries #3\end{center}\vspace{0.5cm}
+  \def\tcc@kw{#2}\noindent\ignorespaces}%
+ {\par\vspace{0.5cm}\noindent\textbf{\iflanguage{english}{Keywords:}{Palavras-chave:}} \tcc@kw\onehalfspacing}
+
+% ---------- hyperref/bookmark (por último) ----------
+\RequirePackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=black,citecolor=black,urlcolor=blue}
+\RequirePackage{bookmark}
+\endinput
