@@ -30,6 +30,9 @@ videos/
 resultados/
 gabarito/
 
+# --- LEIAME.txt: vai só no .zip de entrega (pedido do professor) ---
+LEIAME.txt
+
 # --- Arquivos gerados que contêm as fotos ---
 *.pdf
 *.pptx
