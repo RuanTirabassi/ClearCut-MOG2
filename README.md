@@ -111,6 +111,17 @@ pip uninstall opencv-python opencv-contrib-python
 
 ## Como usar
 
+> **Para rodar com vídeo, você precisa colocar os seus vídeos na pasta `videos/`.** Os vídeos do grupo não estão no repositório (LGPD), então essa pasta não vem junto. Crie `videos/` na raiz do projeto e coloque nela um ou mais vídeos `.mp4`, gravados com a câmera parada e com os **primeiros 2–3 segundos de cena vazia** (veja as [dicas](#dicas-para-um-bom-resultado)). Sem vídeo, dá para usar só a webcam.
+>
+> ```
+> ClearCut-MOG2/
+> └── videos/
+>     ├── video_claro.mp4
+>     └── video_escuro.mp4
+> ```
+>
+> O nome dos vídeos pode ser qualquer um; basta passar o caminho no comando, por exemplo `python codigo/clearcut_mog2.py videos/video_claro.mp4`.
+
 Sempre rode **a partir da pasta do projeto**:
 
 ```bash
@@ -236,17 +247,14 @@ ClearCut-MOG2/
 │   ├── criar_gabarito.py   ferramenta para pintar as máscaras corretas à mão
 │   └── avaliacao.py        calcula o IoU e gera a tabela de acertos (CSV)
 ├── fundos/                 imagens de fundo para trocar com A/D
-├── relatorio/              relatório em LaTeX (main.tex, capitulos/, referencias.bib)
 ├── requirements.txt
 └── README.md
 
-Criadas ao rodar (fora do git):
-├── videos/                 seus vídeos de teste
-├── resultados/             frame_, mascara_, resultado_*.png, demo_*.mp4, tabela_acertos.csv
-└── gabarito/               gabarito_*.png
+Fora do git (LGPD):
+├── videos/                 VOCÊ CRIA e coloca seus vídeos .mp4 aqui
+├── resultados/             criada pelo programa: frame_, mascara_, resultado_*.png, demo_*.mp4, tabela_acertos.csv
+└── gabarito/               criada pelo criar_gabarito.py: gabarito_*.png
 ```
-
-As figuras do relatório mostram um integrante do grupo e não estão no repositório. Por isso o LaTeX não compila só com o que está aqui.
 
 ---
 
